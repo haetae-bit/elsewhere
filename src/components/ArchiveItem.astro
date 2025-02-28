@@ -1,0 +1,43 @@
+---
+interface Props {
+  title: string;
+  url: string;
+  author: string;
+  stats: {
+    tool: string[];
+    format: string[];
+    link?: string;
+  };
+  level: string[];
+  compat?: string;
+}
+
+const { title, url, author, stats, level, compat }: Props = Astro.props;
+---
+<article class="card">
+  <header class="card-header">
+    <h4><a href={url} target="_blank" rel="noopener noreferrer">{title}</a> by {author}</h4>
+    <div class="card-tags">
+      {stats.tool.map(tool => <span class="tag tool">{tool}</span>)}
+      {stats.format.map(format => <span class="tag format">{format}</span>)}
+      {stats.link && (
+        <span class="tag">
+          <a href={stats.link} target="_blank" rel="noopener noreferrer">Archive</a>
+        </span>
+      )}
+    </div>
+    <span class="card-info">{compat}</span>
+  </header>
+
+  <slot />
+  
+  <footer>
+    Level: <span class="card-info">{level.join(" — ")}</span>
+  </footer>
+</article>
+
+<style>
+  .card {
+    
+  }
+</style>

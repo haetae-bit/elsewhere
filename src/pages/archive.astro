@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
+import Layout from "@/layouts/Layout.astro";
+import ArchiveItem from "~/ArchiveItem.astro";
+
+const archives = await getCollection("archive");
+---
+<Layout title="Archive">
+  <main>
+    <h1>Archives</h1>
+
+    <nav id="topics">
+      <ul>
+        {categories.map(category => {
+          const categoryId = category.toLowerCase().replaceAll(/[& ,]/g, "-").replaceAll(/\-+/g, "-");
+          const subcategories = [...new Set(archives.filter(({ data }) => data.category === category).map(({ data }) => data.subcategory))];    
+          return (
+            <li>
+              <a href={`#${categoryId}`}>{category}</a>
+              <ul>
+                {subcategories.map(subcategory => (
+                  <li>
+                    <a href={`#${categoryId}-${subcategory.toLowerCase().replaceAll(/[& ,]/g, "-").replaceAll(/\-+/g, "-")}`}>{subcategory}</a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    {categories.map(category => {
+      const categoryId = category.toLowerCase().replaceAll(/[& ,]/g, "-").replaceAll(/\-+/g, "-");
+      const subcategories = [...new Set(archives.filter(({ data }) => data.category === category).map(({ data }) => data.subcategory))];
+      return (
+        <section>
+          <h2 id={categoryId}>{category}</h2>
+          {subcategories.map(subcategory => (
+            <section>
+              <h3 id={`${categoryId}-${subcategory.toLowerCase().replaceAll(/[& ,]/g, "-").replaceAll(/\-+/g, "-")}`}>{subcategory}</h3>
+              {archives.filter(({ data }) => data.category === category && data.subcategory == subcategory).map(item => (
+                <ArchiveItem
+                  title={item.data.title}
+                  url={item.data.url}
+                  author={item.data.author}
+                  stats={item.data.stats}
+                  level={item.data.level}
+                  compat={item.data.compat}
+                >
+                  <Fragment set:html={item.rendered?.html} />
+                </ArchiveItem>
+              ))}
+            </section>
+          ))}
+        </section>
+      );
+    })}
+  </main>
+</Layout>

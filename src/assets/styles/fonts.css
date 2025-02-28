@@ -1,0 +1,90 @@
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/AtkinsonHyperlegibleNextVF-Variable.woff2") format("woff2-variations"),
+       url("/fonts/AtkinsonHyperlegibleNext-Regular.woff2") format(woff2);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: ("/fonts/AtkinsonHyperlegibleNext-RegularItalic.woff2") format(woff2);
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: ("/fonts/AtkinsonHyperlegibleNext-Bold.woff2") format(woff2);
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: ("/fonts/AtkinsonHyperlegibleNext-BoldItalic.woff2") format(woff2);
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Intel One Mono";
+  src: url("/fonts/IntelOneMono-Regular.woff2") format(woff2);
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Intel One Mono";
+  src: url("/fonts/IntelOneMono-Regular.woff2") format(woff2);
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Intel One Mono";
+  src: url("/fonts/IntelOneMono-Italic.woff2") format(woff2);
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Intel One Mono";
+  src: url("/fonts/IntelOneMono-Bold.woff2") format(woff2);
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Intel One Mono";
+  src: url("/fonts/IntelOneMono-BoldItalic.woff2") format(woff2);
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Maxular Rx";
+  src: url("/fonts/maxular-rx-bold.woff2") format(woff2);
+  font-weight: bold;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Readex Pro";
+  src: url("/fonts/Readexpro[HEXP\,wght].woff2") format("woff2-variations"),
+       url("/fonts/ReadexPro-Regular.woff2") format(woff2);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Readex Pro";
+  src: url("/fonts/ReadexPro-bold.woff2") format(woff2);
+  font-weight: bold;
+  font-display: swap;
+}

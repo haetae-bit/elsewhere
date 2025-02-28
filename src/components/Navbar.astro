@@ -1,0 +1,14 @@
+---
+import type { AstroInstance } from "astro";
+
+interface Page extends AstroInstance {
+  name: string;
+}
+
+const result = await Astro.glob<Page>("../pages/*");
+---
+<nav id="site-nav">
+  <ul>
+    <pre>{JSON.stringify(result, null, 2)}</pre>
+  </ul>
+</nav>

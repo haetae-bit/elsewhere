@@ -1,0 +1,68 @@
+@import url("./reset.css");
+@import url("./fonts.css");
+
+:root {
+  --step--1: clamp(0.9375rem, 0.8477rem + 0.4516vw, 1.2rem);
+  --step-0: clamp(1.125rem, 0.9968rem + 0.6452vw, 1.5rem);
+  --step-1: clamp(1.35rem, 1.1705rem + 0.9032vw, 1.875rem);
+  --step-2: clamp(1.62rem, 1.3725rem + 1.2452vw, 2.3438rem);
+  --step-3: clamp(1.944rem, 1.607rem + 1.6958vw, 2.9297rem);
+  --step-4: clamp(2.3328rem, 1.8783rem + 2.287vw, 3.6621rem);
+  --step-5: clamp(2.7994rem, 2.1913rem + 3.0594vw, 4.5776rem);
+
+  /* COLORS */
+
+  --light-text: #1c1c45;
+  --light-background: #e0e0f0;
+  --light-primary: #db005e;
+  --light-secondary: #a50048;
+  --light-accent: #780033;
+
+  --dark-text: #e0e0f0;
+  --dark-background: #1c1c45;
+  --dark-primary: #ff8cab;
+  --dark-secondary: #ffb8c5;
+  --dark-accent: #ffd7de;
+
+  /* END COLORS */
+
+  color-scheme: light dark;
+  --text: light-dark(var(--light-text), var(--dark-text));
+  --background: light-dark(var(--light-background), var(--dark-background));
+  --primary: light-dark(var(--light-primary), var(--dark-primary));
+  --secondary: light-dark(var(--light-secondary), var(--dark-secondary));
+  --accent: light-dark(var(--light-accent), var(--dark-accent));
+
+  /* FONTS */
+
+  --body-font: "Readex Pro", Verdana, Geneva, Tahoma, sans-serif;
+  --heading-font: "Atkinson Hyperlegible", "Bebas Neue", Arial, Helvetica, sans-serif;
+  --serif-font: "Maxular Rx", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  --mono-font: "Intel One Mono", ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+
+  /* END FONTS */
+}
+
+/* https://www.erikkroes.nl/blog/the-universal-focus-state */
+:focus {
+  box-shadow: 0 0 0 .25rem white;
+  outline: .375rem double black;
+  border-radius: .125rem;
+}
+
+html { font-size: var(--step-0); } 
+h1 {
+  font-size: var(--step-5);
+  font-weight: bold;
+}
+h2 {
+  font-size: var(--step-4);
+  font-weight: bold;
+}
+h3 { 
+  font-size: var(--step-3); 
+  font-weight: bold;
+}
+h4 { font-size: var(--step-2); }
+h5 { font-size: var(--step-1); }
+small { font-size: var(--step--1); }
