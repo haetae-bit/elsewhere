@@ -24,20 +24,21 @@ const notes = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>("/da
 
 export const partial = true;
 ---
-<nav class="tab-list" id="archive-subcategories-nav" role="tablist">
+<div class="tab-list" id="subcategories-nav" role="tablist">
   {subcategories.map(subcategory => (
     <button 
       hx-get={`/archive/category/${slugify(item.data.category)}/${slugify(subcategory)}`} 
       role="tab" 
+      class="button"
       aria-selected={subcategory == item.data.subcategory}
-      aria-controls="archive-subcategories"
+      aria-controls="subcategories"
     >
       {subcategory}
     </button>
   ))}
-</nav>
+</div>
 
-<section id="archive-subcategories" class="tab-content full-bleed" role="tabpanel">
+<section id="subcategories" class="subcategory tab-content" role="tabpanel">
   {notes.filter(note => note.frontmatter.category == item.data.category && note.frontmatter.subcategory == item.data.subcategory).map(note => (
     <note.Content />
   ))}

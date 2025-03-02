@@ -7,16 +7,44 @@ import Layout from "@/layouts/Layout.astro";
   or, you can use the form below:
   <form action="" method="post">
     <fieldset>
-      <legend>contact form</legend>
-      <label for="name">name</label>
+      <legend>Contact Form</legend>
+      <label for="name">Name</label>
       <input type="text" name="name" id="name" />
 
-      <label for="email">email</label>
+      <label for="email">Email</label>
       <input type="email" name="email" id="email" />
 
-      <label for="message">message</label>
+      <label for="message">Message</label>
       <textarea name="message" id="message" rows="4"></textarea>
+
+      <button class="button primary" type="submit">send!</button>
     </fieldset>
-    <button class="button primary" type="submit">send!</button>
   </form>
 </Layout>
+
+<style>
+  form {
+    display: grid;
+    grid-auto-flow: row;
+
+    fieldset {
+      display: grid;
+      grid-auto-flow: row;
+      padding: var(--space-xs);
+      gap: var(--space-3xs);
+
+      legend {
+        color: color-mix(in oklab, var(--text) 80%, var(--background) 20%);
+      }
+
+      input {
+        min-width: 35ch;
+        margin-bottom: var(--space-xs);
+      }
+
+      button {
+        margin-top: var(--space-xs);
+      }
+    }
+  }
+</style>

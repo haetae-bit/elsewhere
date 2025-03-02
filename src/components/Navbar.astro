@@ -1,5 +1,6 @@
 ---
 import type { MarkdownInstance } from "astro";
+import ThemeSwitch from "./ThemeSwitch.astro";
 interface Frontmatter {
   title: string;
   order: number;
@@ -14,4 +15,5 @@ const pages = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>("/sr
       <li><a href={page.url}>{page.frontmatter.title}</a></li>
     ))}
   </ul>
+  <ThemeSwitch />
 </nav>

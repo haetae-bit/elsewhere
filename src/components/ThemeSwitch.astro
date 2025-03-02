@@ -1,0 +1,19 @@
+<fieldset>
+  <legend>Theme switch</legend>
+  
+  <input type="radio" name="theme" id="dark" value="dark" />
+  <label for="dark">Dark</label>
+
+  <input type="radio" name="theme" id="light" value="light" />
+  <label for="light">Light</label>
+</fieldset>
+
+<script>
+  const inputs = document.querySelectorAll<HTMLInputElement>("input[name='theme']");
+  inputs.forEach(input => {
+    input.addEventListener("click", e => {
+      let target = e.currentTarget as HTMLInputElement;
+      document.documentElement.style.setProperty("color-scheme", target.value);
+    });
+  });
+</script>

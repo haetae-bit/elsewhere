@@ -18,20 +18,21 @@ const subcategories = [...new Set(archives.filter(({ data }) => data.category ==
 
 export const partial = true;
 ---
-<nav class="tab-list" id="archive-categories-nav" role="tablist">
+<div class="tab-list" id="categories-nav" role="tablist">
   {categories.map(category => (
     <button 
       hx-get={`/archive/category/${slugify(category)}`} 
       role="tab" 
+      class="button"
       aria-selected={category == item.data.category ? true : false}
-      aria-controls="archive-categories"
+      aria-controls="categories"
     >
       {category}
     </button>
   ))}
-</nav>
+</div>
 
-<section class="tab-content" id="archive-categories" role="tabpanel">
+<section class="tab-content" id="categories" role="tabpanel">
   <h2 class="title">{item.data.category}</h2>
 
   <section 

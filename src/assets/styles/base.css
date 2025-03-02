@@ -2,6 +2,8 @@
 @import url("./fonts.css");
 
 :root {
+  /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  --step--2: clamp(0.7813rem, 0.7747rem + 0.0326vw, 0.8rem);
   --step--1: clamp(0.9375rem, 0.9158rem + 0.1087vw, 1rem);
   --step-0: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
   --step-1: clamp(1.35rem, 1.2761rem + 0.3696vw, 1.5625rem);
@@ -22,17 +24,21 @@
 
   /* COLORS */
 
+  /* @link https://www.inclusivecolors.com/?style_dictionary=eyJjb2xvciI6eyJiYXNlIjp7InByaW1hcnkiOnsiNTAiOnsidmFsdWUiOiIjMjIwZjFkIn0sIjEwMCI6eyJ2YWx1ZSI6IiMzYzFiMzEifSwiMjAwIjp7InZhbHVlIjoiIzVkMjc0OCJ9LCIzMDAiOnsidmFsdWUiOiIjODczNDYzIn0sIjQwMCI6eyJ2YWx1ZSI6IiNiYzQwODAifSwiNTAwIjp7InZhbHVlIjoiI2U5NTY5NyJ9LCI2MDAiOnsidmFsdWUiOiIjZjY3Y2E0In0sIjcwMCI6eyJ2YWx1ZSI6IiNmZjhjYWIiLCJsb2NrZWQiOnRydWV9LCI4MDAiOnsidmFsdWUiOiIjZmZjNGQxIn0sIjkwMCI6eyJ2YWx1ZSI6IiNmZmQ3ZTAifSwiOTUwIjp7InZhbHVlIjoiI2ZmZjFmNCJ9fSwiYmFja2dyb3VuZCI6eyI1MCI6eyJ2YWx1ZSI6IiMxZDE0MmQifSwiMTAwIjp7InZhbHVlIjoiIzFjMWM0NSIsImxvY2tlZCI6dHJ1ZX0sIjIwMCI6eyJ2YWx1ZSI6IiMyZTMwNjkifSwiMzAwIjp7InZhbHVlIjoiIzQ0NDk5NCJ9LCI0MDAiOnsidmFsdWUiOiIjNjI2OWI1In0sIjUwMCI6eyJ2YWx1ZSI6IiM3NDdiYzEifSwiNjAwIjp7InZhbHVlIjoiIzk0OWJkMiJ9LCI3MDAiOnsidmFsdWUiOiIjYTZhZGRiIn0sIjgwMCI6eyJ2YWx1ZSI6IiNjZWQyZWIifSwiOTAwIjp7InZhbHVlIjoiI2RiZTFmMSIsImxvY2tlZCI6dHJ1ZX0sIjk1MCI6eyJ2YWx1ZSI6IiNmM2Y0ZjkifX0sInN3YXRjaDMiOnsiNTAiOnsidmFsdWUiOiIjMWUxMDI2In0sIjEwMCI6eyJ2YWx1ZSI6IiMyYzE5MzYifSwiMjAwIjp7InZhbHVlIjoiIzQ3MmI1NiJ9LCIzMDAiOnsidmFsdWUiOiIjNjg0MDdkIn0sIjQwMCI6eyJ2YWx1ZSI6IiM5MDU5YWMifSwiNTAwIjp7InZhbHVlIjoiI2EzNmFjMSJ9LCI2MDAiOnsidmFsdWUiOiIjYjk4ZWQyIn0sIjcwMCI6eyJ2YWx1ZSI6IiNjNWEyZGIifSwiODAwIjp7InZhbHVlIjoiI2RmY2RlYiJ9LCI5MDAiOnsidmFsdWUiOiIjZTlkZGYxIn0sIjk1MCI6eyJ2YWx1ZSI6IiNmN2YzZjkifX0sInN3YXRjaDEiOnsiNTAiOnsidmFsdWUiOiIjMzAwNzBkIn0sIjEwMCI6eyJ2YWx1ZSI6IiM0NDBiMTEifSwiMjAwIjp7InZhbHVlIjoiIzczMTYxNyJ9LCIzMDAiOnsidmFsdWUiOiIjOTkyOTFlIn0sIjQwMCI6eyJ2YWx1ZSI6IiNjNTQzMjYifSwiNTAwIjp7InZhbHVlIjoiI2VmNWQyYSJ9LCI2MDAiOnsidmFsdWUiOiIjZmI4MDU5In0sIjcwMCI6eyJ2YWx1ZSI6IiNmZDkzNmUifSwiODAwIjp7InZhbHVlIjoiI2ZmYmZhYSIsImxvY2tlZCI6dHJ1ZX0sIjkwMCI6eyJ2YWx1ZSI6IiNmZmRhYmUifSwiOTUwIjp7InZhbHVlIjoiI2ZmZjNlMSJ9fSwic3dhdGNoMiI6eyI1MCI6eyJ2YWx1ZSI6IiMyOTBkMDgifSwiMTAwIjp7InZhbHVlIjoiIzM4MTgwYyJ9LCIyMDAiOnsidmFsdWUiOiIjNWIyZTE1In0sIjMwMCI6eyJ2YWx1ZSI6IiM3YjQ0MTkifSwiNDAwIjp7InZhbHVlIjoiIzlkNjEyOSJ9LCI1MDAiOnsidmFsdWUiOiIjYmM3ZjNiIn0sIjYwMCI6eyJ2YWx1ZSI6IiNjYTkyNDgifSwiNzAwIjp7InZhbHVlIjoiI2Q4YTc1YSJ9LCI4MDAiOnsidmFsdWUiOiIjZjNjMzY3In0sIjkwMCI6eyJ2YWx1ZSI6IiNmYmQ2ODAifSwiOTUwIjp7InZhbHVlIjoiI2ZmZThhMiIsImxvY2tlZCI6dHJ1ZX19fX19 */
+  
   --light-text: #1c1c45;
-  --light-background: #e0e0f0;
-  --light-primary: #db005e;
-  --light-secondary: #a50048;
-  --light-accent: #780033;
+  --light-background: #dbe1f1;
+  --light-primary: #bc4080;
+  --light-secondary: #99291e;
+  --light-accent: #5d2748;
+  --light-alt: #290d08;
 
-  --dark-text: #e0e0f0;
+  --dark-text: #dbe1f1;
   --dark-background: #1c1c45;
   --dark-primary: #ff8cab;
-  --dark-secondary: #ffb8c5;
-  --dark-accent: #ffd7de;
+  --dark-secondary: #ffbfaa;
+  --dark-accent: #ffc4d1;
+  --dark-alt: #ffe8a2;
 
   /* END COLORS */
 
@@ -42,6 +48,8 @@
   --primary: light-dark(var(--light-primary), var(--dark-primary));
   --secondary: light-dark(var(--light-secondary), var(--dark-secondary));
   --accent: light-dark(var(--light-accent), var(--dark-accent));
+  --alt: light-dark(var(--light-alt), var(--dark-alt));
+  --decorative: color-mix(in oklab, var(--background) 75%, var(--text) 25%);
 
   /* FONTS */
 
@@ -53,13 +61,25 @@
 }
 
 .large {
-  --step--1: clamp(0.9375rem, 0.8477rem + 0.4516vw, 1.2rem);
-  --step-0: clamp(1.125rem, 0.9968rem + 0.6452vw, 1.5rem);
-  --step-1: clamp(1.35rem, 1.1705rem + 0.9032vw, 1.875rem);
-  --step-2: clamp(1.62rem, 1.3725rem + 1.2452vw, 2.3438rem);
-  --step-3: clamp(1.944rem, 1.607rem + 1.6958vw, 2.9297rem);
-  --step-4: clamp(2.3328rem, 1.8783rem + 2.287vw, 3.6621rem);
-  --step-5: clamp(2.7994rem, 2.1913rem + 3.0594vw, 4.5776rem);
+  /* @link https://utopia.fyi/type/calculator?c=320,20,1.2,1364,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  --step--2: clamp(0.8681rem, 0.8644rem + 0.0183vw, 0.88rem);
+  --step--1: clamp(1.0417rem, 1.0238rem + 0.0894vw, 1.1rem);
+  --step-0: clamp(1.25rem, 1.2117rem + 0.1916vw, 1.375rem);
+  --step-1: clamp(1.5rem, 1.433rem + 0.3352vw, 1.7188rem);
+  --step-2: clamp(1.8rem, 1.6932rem + 0.534vw, 2.1484rem);
+  --step-3: clamp(2.16rem, 1.9989rem + 0.8054vw, 2.6855rem);
+  --step-4: clamp(2.592rem, 2.3575rem + 1.1723vw, 3.3569rem);
+  --step-5: clamp(3.1104rem, 2.7776rem + 1.664vw, 4.1962rem);
+
+  --space-3xs: clamp(0.3125rem, 0.2933rem + 0.0958vw, 0.375rem);
+  --space-2xs: clamp(0.625rem, 0.6058rem + 0.0958vw, 0.6875rem);
+  --space-xs: clamp(0.9375rem, 0.8992rem + 0.1916vw, 1.0625rem);
+  --space-s: clamp(1.25rem, 1.2117rem + 0.1916vw, 1.375rem);
+  --space-m: clamp(1.875rem, 1.8175rem + 0.2874vw, 2.0625rem);
+  --space-l: clamp(2.5rem, 2.4234rem + 0.3831vw, 2.75rem);
+  --space-xl: clamp(3.75rem, 3.6351rem + 0.5747vw, 4.125rem);
+  --space-2xl: clamp(5rem, 4.8467rem + 0.7663vw, 5.5rem);
+  --space-3xl: clamp(7.5rem, 7.2701rem + 1.1494vw, 8.25rem);
 }
 
 /* https://www.erikkroes.nl/blog/the-universal-focus-state */
@@ -68,6 +88,7 @@
   outline: .375rem double black;
   border-radius: .125rem;
 }
+a:focus { display: inline-block; }
 
 html { font-size: var(--step-0); } 
 h1 {

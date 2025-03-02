@@ -16,20 +16,25 @@ const { title, url, author, stats, level, compat }: Props = Astro.props;
 ---
 <article class="card">
   <header class="card-header">
-    <h4><a href={url} target="_blank" rel="noopener noreferrer">{title}</a> by {author}</h4>
+    <hgroup>
+      <h4><a href={url} target="_blank" rel="noopener noreferrer">{title}</a></h4>
+      <h5>by <strong>{author}</strong></h5>
+    </hgroup>
     <div class="card-tags">
       {stats.tool.map(tool => <span class="tag tool">{tool}</span>)}
       {stats.format.map(format => <span class="tag format">{format}</span>)}
       {stats.link && (
-        <span class="tag">
+        <span class="tag link">
           <a href={stats.link} target="_blank" rel="noopener noreferrer">Archive</a>
         </span>
       )}
     </div>
-    <span class="card-info">{compat}</span>
+    {compat && <span class="card-info">{compat}</span>}
   </header>
 
-  <slot />
+  <div class="card-content">
+    <slot />
+  </div>
   
   <footer>
     Level: <span class="card-info">{level.join(" — ")}</span>
@@ -38,6 +43,57 @@ const { title, url, author, stats, level, compat }: Props = Astro.props;
 
 <style>
   .card {
-    
+    display: flex;
+    flex-flow: column wrap;
+    min-width: max(35ch, 100%);
+    max-width: min(50ch, 75ch);
+    padding: var(--space-xs);
+    gap: var(--space-s);
+    background-color: color-mix(in oklab, var(--background) 95%, var(--text) 5%);
+    line-height: 1;
+  }
+
+  .card-header {
+    position: relative;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+    text-align: center;
+
+    hgroup {
+      display: flex;
+      flex-flow: column wrap;
+      gap: var(--space-3xs);
+      align-items: center;
+
+      h4 { font-size: var(--step-1); }
+      h5 { font-size: var(--step-0); }
+    }
+
+    .card-info {
+      position: absolute;
+      top: -0.125rem;
+      right: -0.125rem;
+    }
+  }
+
+  .card-tags {
+    display: flex;
+    gap: var(--space-3xs);
+    font-size: var(--step--2);
+
+    .tag {
+      padding: var(--space-3xs);
+      border: 0.125rem solid var(--decorative);
+
+      &.tool { background-color: color-mix(in oklab, var(--secondary) 10%, var(--background) 90%); }
+      &.format { background-color: color-mix(in oklab, var(--alt) 10%, var(--background) 90%); }
+      &.link { background-color: color-mix(in oklab, var(--primary) 10%, var(--background) 90%); }
+    }
+  }
+
+  .card-content {
+    line-height: 1.5em;
   }
 </style>
