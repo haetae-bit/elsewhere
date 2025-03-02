@@ -159,7 +159,7 @@ const archives = await getCollection("archive");
     display: grid;
     grid-template-columns: repeat(3, minmax(35ch, 75ch));
     gap: var(--space-xs);
-    margin: 0 min(var(--space-xs), (80ch - 100vw + var(--space-l)) / 2);
+    margin: 0 min(0px, (80ch - 100vw + var(--space-m)) / 2);
 
     @media screen and (max-width: 1370px) {
       grid-template-columns: repeat(2, minmax(35ch, 50ch));
