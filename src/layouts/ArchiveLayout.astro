@@ -1,0 +1,162 @@
+---
+import { getCollection } from "astro:content";
+import slugify from "@/utils/slugify";
+import categories from "@/metadata/categories";
+import Layout from "@/layouts/Layout.astro";
+import ArchiveItem from "~/ArchiveItem.astro";
+
+const archives = await getCollection("archive");
+---
+<Layout title="Archive">
+  <h1 class="title">Archives</h1>
+
+  <section 
+    id="tabs" 
+    hx-get={`/archive/category/${slugify(categories[0])}`} 
+    hx-trigger="load delay:100ms" 
+    hx-target="#tabs" 
+    hx-swap="innerHTML"
+    hx-indicator="#category-loading"
+  >
+    <p id="category-loading">loading...</p>
+  </section>
+
+  <noscript>
+    <nav id="topics">
+      <ul>
+        {categories.map(category => (
+          <li><a href={`#${slugify(category)}`}>{category}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <section id="archive">
+    {categories.map(category => {
+      const subcategories = [...new Set(archives.filter(({ data }) => data.category === category).map(({ data }) => data.subcategory))];
+      return (
+        <section class="category">
+          <h2 id={slugify(category)} class="title">{category}</h2>
+          <nav id={`${slugify(category)}-nav`} class="subtopics">
+            <ul>
+              {subcategories.map(subcategory => (
+                <li><a href={`#${slugify(category)}-${slugify(subcategory)}`}>{subcategory}</a></li>
+              ))}
+            </ul>
+            <a href="#" class="to-top">top</a>
+          </nav>
+          {subcategories.map(subcategory => (
+            <section class="subcategory">
+              <h3 id={`${slugify(category)}-${slugify(subcategory)}`} class="title">{subcategory}</h3>
+              {archives.filter(({ data }) => data.category === category && data.subcategory == subcategory).map(item => (
+                <ArchiveItem
+                  title={item.data.title}
+                  url={item.data.url}
+                  author={item.data.author}
+                  stats={item.data.stats}
+                  level={item.data.level}
+                  compat={item.data.compat}
+                >
+                  <Fragment set:html={item.rendered?.html} />
+                </ArchiveItem>
+              ))}
+            </section>
+          ))}
+        </section>
+      );
+    })}
+    </section>
+  </noscript>
+</Layout>
+
+<style>
+  /* FOR JS-ENABLED USERS */
+  #tabs {
+    display: flex;
+    flex-flow: column wrap;
+    gap: var(--space-s);
+
+    #inner-tabs {
+      display: flex;
+      flex-flow: column wrap;
+      gap: var(--space-s);
+
+      .tab-content {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-xs);
+
+        .title { grid-column: 1 / -1; }
+      }
+    }
+    
+    .tab-list {
+      display: flex;
+      flex-flow: row wrap;
+      background-color: color-mix(in oklab, var(--background) 90%, var(--text) 10%);
+      padding: 1rem;
+      justify-content: center;
+      gap: var(--space-2xs);
+      
+      button[role="tab"] {
+        padding: 0.125rem 0.5rem;
+      }
+    }
+
+    h2 { font-variant: small-caps; }
+    .title { text-align: center; }
+  }
+
+  /* FOR JS-DISABLED USERS */
+  #topics, .subtopics {
+    position: relative;
+    background-color: color-mix(in oklab, var(--background) 90%, var(--text) 10%);
+    padding: 1rem;
+    display: grid;
+    place-content: center;
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-flow: row wrap;
+      gap: 1rem;
+    }
+
+    .to-top {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: var(--step--1);
+    }
+  }
+
+  #topics { margin: var(--space-s) 0 var(--space-xl); }
+
+  #archive {
+    display: flex;
+    flex-flow: column wrap;
+    gap: var(--space-xl);
+  }
+
+  .category {
+    display: flex;
+    flex-flow: column wrap;
+    gap: var(--space-m);
+
+    .subcategory {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-s);
+    }
+
+    .title {
+      grid-column: 1 / -1;
+    }
+  }
+
+  h1, h2 { font-variant: small-caps; }
+  .title { text-align: center; }
+</style>
+
+<script>
+  import "htmx.org";
+</script>

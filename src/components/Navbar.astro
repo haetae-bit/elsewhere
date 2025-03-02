@@ -1,14 +1,17 @@
 ---
-import type { AstroInstance } from "astro";
-
-interface Page extends AstroInstance {
-  name: string;
+import type { MarkdownInstance } from "astro";
+interface Frontmatter {
+  title: string;
+  order: number;
 }
 
-const result = await Astro.glob<Page>("../pages/*");
+const pages = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>("/src/pages/**/*.md", { eager: true }));
 ---
 <nav id="site-nav">
   <ul>
-    <pre>{JSON.stringify(result, null, 2)}</pre>
+    <li><a href="/">Home</a></li>
+    {pages.sort((a, b) => a.frontmatter.order - b.frontmatter.order).map(page => (
+      <li><a href={page.url}>{page.frontmatter.title}</a></li>
+    ))}
   </ul>
 </nav>

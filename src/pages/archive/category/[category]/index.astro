@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
+import slugify from "@/utils/slugify";
+
+export const getStaticPaths = (async () => {
+  const archives = await getCollection("archive", ({ data }) => data.category);
+  return archives.map(item => ({
+    params: { category: slugify(item.data.category) },
+    props: { item },
+  }));
+}) satisfies GetStaticPaths;
+
+const { item } = Astro.props;
+const archives = await getCollection("archive");
+const subcategories = [...new Set(archives.filter(({ data }) => data.category === item.data.category).map(({ data }) => data.subcategory))];
+
+export const partial = true;
+---
+<nav class="tab-list" id="archive-categories-nav" role="tablist">
+  {categories.map(category => (
+    <button 
+      hx-get={`/archive/category/${slugify(category)}`} 
+      role="tab" 
+      aria-selected={category == item.data.category ? true : false}
+      aria-controls="archive-categories"
+    >
+      {category}
+    </button>
+  ))}
+</nav>
+
+<section class="tab-content" id="archive-categories" role="tabpanel">
+  <h2 class="title">{item.data.category}</h2>
+
+  <section 
+    id="inner-tabs" 
+    hx-get={`/archive/category/${slugify(item.data.category)}/${slugify(subcategories[0])}`} 
+    hx-trigger="load" 
+    hx-target="#inner-tabs" 
+    hx-swap="innerHTML"
+    hx-indicator="#subcategory-loading"
+  >
+    <p id="subcategory-loading">loading...</p>
+  </section>
+</section>
