@@ -7,7 +7,7 @@ import ArchiveItem from "~/ArchiveItem.astro";
 
 const archives = await getCollection("archive");
 ---
-<Layout title="Archive">
+<Layout title="Archive" class="archive">
   <h1 class="title">Archives</h1>
 
   <section 
@@ -18,11 +18,11 @@ const archives = await getCollection("archive");
     hx-swap="innerHTML"
     hx-indicator="#category-loading"
   >
-    <p id="category-loading">loading...</p>
+    <p id="category-loading">Loading...</p>
   </section>
 
   <noscript>
-    <nav id="topics">
+    <nav id="topics" aria-label="Navigate categories">
       <ul>
         {categories.map(category => (
           <li><a href={`#${slugify(category)}`}>{category}</a></li>
@@ -36,7 +36,7 @@ const archives = await getCollection("archive");
       return (
         <section class="category">
           <h2 id={slugify(category)} class="title">{category}</h2>
-          <nav id={`${slugify(category)}-nav`} class="subtopics">
+          <nav id={`${slugify(category)}-nav`} class="subtopics" aria-label={`Subcategories for: ${category}`}>
             <ul>
               {subcategories.map(subcategory => (
                 <li><a href={`#${slugify(category)}-${slugify(subcategory)}`}>{subcategory}</a></li>
@@ -70,11 +70,18 @@ const archives = await getCollection("archive");
 </Layout>
 
 <style>
+  .archive {
+    flex-flow: column wrap;
+  }
+
   /* FOR JS-ENABLED USERS */
   #tabs {
     display: flex;
     flex-flow: column wrap;
     gap: var(--space-s);
+
+    h2 { font-size: var(--step-3); }
+    h3 { font-size: var(--step-2); }
     
     #inner-tabs {
       display: flex;
@@ -171,6 +178,8 @@ const archives = await getCollection("archive");
   }
 
   h1, h2 { font-variant: small-caps; }
+  h2 { font-size: var(--step-3); }
+  h3 { font-size: var(--step-2); }
   .title {
     text-align: center;
     grid-column: 1 / -1;

@@ -8,7 +8,7 @@ interface Frontmatter {
 
 const pages = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>("/src/pages/**/*.md", { eager: true }));
 ---
-<nav id="site-nav">
+<nav id="site-nav" aria-label="Main navigation">
   <ul>
     <li><a href="/">Home</a></li>
     {pages.sort((a, b) => a.frontmatter.order - b.frontmatter.order).map(page => (
@@ -17,3 +17,17 @@ const pages = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>("/sr
   </ul>
   <ThemeSwitch />
 </nav>
+
+<style>
+  #site-nav {
+    display: grid;
+    grid-auto-flow: column;
+    
+    ul {
+      list-style: none;
+      display: flex;
+      flex-flow: row wrap;
+      gap: var(--space-s);
+    }
+  }
+</style>

@@ -1,10 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 ---
-<Layout title="Contact">
-  <slot />
+<Layout title="Contact" class="contact">
+  <div class="content">
+    <slot />
+  </div>
 
-  or, you can use the form below:
   <form action="" method="post">
     <fieldset>
       <legend>Contact Form</legend>
@@ -23,6 +24,20 @@ import Layout from "@/layouts/Layout.astro";
 </Layout>
 
 <style>
+  .contact {
+    gap: var(--space-xs);
+  }
+
+  .content {
+    line-height: 1.5;
+    margin-trim: block;
+    
+    p { margin-block: 1lh; }
+
+    :first-child { margin-block-start: 0; }
+    :last-child { margin-block-end: 0; }
+  }
+
   form {
     display: grid;
     grid-auto-flow: row;
