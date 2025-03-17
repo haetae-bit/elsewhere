@@ -1,0 +1,203 @@
+---
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
+import skillLevels from "@/metadata/skill-levels";
+import tools from "@/metadata/tools";
+
+const filteredArchive = await getCollection("archive", ({ data }) => data.subcategory);
+const subcategories = categories.map(category => (
+  [...new Set(filteredArchive.filter(({ data }) => data.category == category).map(({ data }) => data.subcategory))]
+));
+---
+<div x-data="table">
+  <input type="search" name="search" id="search" x-model.debounce.500ms="query" />
+  <button type="submit" x-show="false">Search</button>
+
+  <div class="filters">
+    <div class="filter">
+      <label for="category-filter">Categories</label>
+      <select name="category-filter" id="category-filter">
+        <option disabled>Filter by category...</option>
+        {categories.map(category => (
+          <option 
+            @click=`filterBy('category', '${category}'); filterCategory = '${category}'`
+          >
+            {category}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="subcategory-filter">Subcategories</label>
+      <select name="subcategory-filter" id="subcategory-filter">
+        <option disabled>Filter by subcategory...</option>
+        {subcategories.map((category, index) => (
+          <optgroup label={categories[index]}>
+            {category.map(subcategory => (
+              <option 
+                @click=`filterBy('subcategory', '${subcategory}'); filterCategory = '${categories[index]}'`
+              >
+                {subcategory}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="tool-filter">Tools</label>
+      <select name="tool-filter" id="tool-filer">
+        <option disabled>Filter by tools...</option>
+        {tools.map(tool => (
+          <option @click=`filterBy('tool', '${tool}')`>{tool}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="level-filter">Skill Levels</label>
+      <select name="level-filter" id="level-filter">
+        <option disabled>Filter by skill levels...</option>
+        {skillLevels.map(level => (
+          <option @click=`filterBy('level', '${level}')`>{level}</option>
+        ))}
+      </select>
+    </div>
+
+    <button @click="filterBy('','')">Clear Filters</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Subcategory</th>
+        <th>Tools</th>
+        <th>Formats</th>
+        <th>Skill Levels</th>
+        <th>Archived?</th>
+        <th>Compatibility</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <template x-for="item in results" :key="item.id">
+        <tr>
+          <td>
+            <a :href="item.url" x-text="item.title" target="_blank" rel="noopener noreferrer"></a>
+          </td>
+          <td x-text="item.author"></td>
+          <td x-text="item.category"></td>
+          <td x-text="item.subcategory"></td>
+          <td>
+            <template x-for="tool in item.tool">
+              <span x-text="tool"></span>
+            </template>
+          </td>
+          <td>
+            <template x-for="format in item.format">
+              <span x-text="format"></span>
+            </template>
+          </td>
+          <td>
+            <template x-for="level in item.level">
+              <span x-text="level"></span>
+            </template>
+          </td>
+          <td>
+            <template x-if="item.archived">
+              <a :href="item.archived" rel="noopener noreferrer">Archive Link</a>
+            </template>
+            <template x-if="item.archived == false">
+              <span>Not archived (yet)</span>
+            </template>
+          </td>
+          <td x-text="item.compat"></td>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+
+  <div>
+    <button @click="previous" :disabled="currentPage == 1">Previous</button>
+    <span x-text="`Page ${currentPage} of ${total}`"></span>
+    <button @click="next" :disabled="currentPage == total">Next</button>
+  </div>
+</div>
+
+<script>
+  import { keys, type Archive } from "@/utils/types";
+  import Fuse from "fuse.js";
+
+  document.addEventListener("alpine:init", () => {
+    window.Alpine.data("table", () => ({
+      query: "",
+      hits: 0,
+      currentPage: 1,
+      itemsPerPage: 20,
+      filterCategory: "",
+      filterColumn: "",
+      filterValue: "",
+      sortColumn: "",
+      sortAsc: false,
+      items: [],
+      index: undefined,
+      fuse: undefined,
+      async init() {
+        const response = await fetch("/archive/data.json");
+        const json = await response.json();
+        this.items = json.data;
+        // @ts-ignore
+        this.index = Fuse.parseIndex<Archive>(json.index);
+        const options = { keys };
+        // @ts-ignore
+        this.fuse = new Fuse<Archive>(this.items, options, this.index);
+      },
+      sort(column: string) {
+        if (this.sortColumn == column) { this.sortAsc = !this.sortAsc; }
+        this.sortColumn = column;
+        this.items.sort((a, b) => {
+          if (a[this.sortColumn] < b[this.sortColumn]) return this.sortAsc ? 1 : -1;
+          if (a[this.sortColumn] > b[this.sortColumn]) return this.sortAsc ? -1 : 1;
+          return 0;
+        });
+      },
+      filterBy(column: string, value: string) {
+        this.filterColumn = column;
+        this.filterValue = value;
+        this.currentPage = 1;
+      },
+      get results() {
+        let items = this.items;
+        if (this.query !== "") {
+          // @ts-ignore
+          items = this.fuse.search(this.query).map(result => result.item);
+        }
+        if (this.filterColumn !== "" && this.filterValue !== "") {
+          if (this.filterColumn == "subcategory" && this.filterCategory !== "") {
+            items = items.filter(item => item["category"] == this.filterCategory && item[this.filterColumn] == this.filterValue);
+          } else {
+            items = items.filter(item => item[this.filterColumn] == this.filterValue);
+          }
+        }
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = this.currentPage * this.itemsPerPage;
+        this.hits = items.length;
+        return items.slice(start, end);
+      },
+      get total() {
+        return Math.ceil(this.hits / this.itemsPerPage);
+      },
+      previous() {
+        if (this.currentPage > 1) { this.currentPage--; }
+      },
+      next() {
+        if (this.currentPage < this.total) { this.currentPage++; }
+      },
+    }));
+  });
+</script>

@@ -1,5 +1,8 @@
 ---
+import slugify from '@/utils/slugify';
+
 interface Props {
+  id: string;
   title: string;
   url: string;
   author: string;
@@ -12,9 +15,9 @@ interface Props {
   compat?: string;
 }
 
-const { title, url, author, stats, level, compat }: Props = Astro.props;
+const { id, title, url, author, stats, level, compat }: Props = Astro.props;
 ---
-<article class="card">
+<article class="card" id={slugify(id)}>
   <header class="card-header">
     <hgroup>
       <h4><a href={url} target="_blank" rel="noopener noreferrer">{title}</a></h4>

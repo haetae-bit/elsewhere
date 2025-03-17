@@ -46,6 +46,7 @@ export const partial = true;
   <h3 class="title">{item.data.subcategory}</h3>
   {archives.filter(({ data }) => data.category == item.data.category && data.subcategory == item.data.subcategory).map(item => (
     <ArchiveItem
+      id={item.id}
       title={item.data.title}
       url={item.data.url}
       author={item.data.author}
