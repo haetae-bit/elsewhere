@@ -5,8 +5,8 @@ import { keys } from "@/utils/types";
 
 export const GET: APIRoute = async () => {
   const archives = await getCollection("archive");
-  const data = archives.map(({ data }, id) => ({
-    id: id,
+  const data = archives.map(({ data }, index) => ({
+    id: index,
     title: data.title,
     url: data.url,
     author: data.author,
@@ -22,7 +22,7 @@ export const GET: APIRoute = async () => {
   const index = Fuse.createIndex(keys, data);
 
   return new Response(
-    JSON.stringify({ index: index.toJSON(), data }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    JSON.stringify({ index: index.toJSON(), archives: data }),
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 };

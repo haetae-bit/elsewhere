@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
-import categories from "@/metadata/categories";
 import skillLevels from "@/metadata/skill-levels";
 import tools from "@/metadata/tools";
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
 
 const filteredArchive = await getCollection("archive", ({ data }) => data.subcategory);
 const subcategories = categories.map(category => (
@@ -20,7 +20,7 @@ const subcategories = categories.map(category => (
         <option disabled>Filter by category...</option>
         {categories.map(category => (
           <option 
-            @click=`filterBy('category', '${category}'); filterCategory = '${category}'`
+            :selected=`filterBy('category', '${category}'); filterCategory = '${category}'`
           >
             {category}
           </option>
@@ -36,7 +36,7 @@ const subcategories = categories.map(category => (
           <optgroup label={categories[index]}>
             {category.map(subcategory => (
               <option 
-                @click=`filterBy('subcategory', '${subcategory}'); filterCategory = '${categories[index]}'`
+                x-on:selected=`filterBy('subcategory', '${subcategory}'); filterCategory = '${categories[index]}'`
               >
                 {subcategory}
               </option>
@@ -110,7 +110,7 @@ const subcategories = categories.map(category => (
           </td>
           <td>
             <template x-if="item.archived">
-              <a :href="item.archived" rel="noopener noreferrer">Archive Link</a>
+              <a :href="item.archived" target="_blank" rel="noopener noreferrer">Archive Link</a>
             </template>
             <template x-if="item.archived == false">
               <span>Not archived (yet)</span>
@@ -123,9 +123,9 @@ const subcategories = categories.map(category => (
   </table>
 
   <div>
-    <button @click="previous" :disabled="currentPage == 1">Previous</button>
-    <span x-text="`Page ${currentPage} of ${total}`"></span>
-    <button @click="next" :disabled="currentPage == total">Next</button>
+    <button @click="previous" :disabled="current == 1">Previous</button>
+    <span x-text="`Page ${current} of ${total}`"></span>
+    <button @click="next" :disabled="current == total">Next</button>
   </div>
 </div>
 
@@ -133,11 +133,10 @@ const subcategories = categories.map(category => (
   import { keys, type Archive } from "@/utils/types";
   import Fuse from "fuse.js";
 
-  document.addEventListener("alpine:init", () => {
-    window.Alpine.data("table", () => ({
+  window.Alpine.data("table", () => ({
       query: "",
       hits: 0,
-      currentPage: 1,
+      current: 1,
       itemsPerPage: 20,
       filterCategory: "",
       filterColumn: "",
@@ -146,15 +145,14 @@ const subcategories = categories.map(category => (
       sortAsc: false,
       items: [],
       index: undefined,
-      fuse: undefined,
+      fuse: Fuse.prototype,
       async init() {
         const response = await fetch("/archive/data.json");
         const json = await response.json();
-        this.items = json.data;
-        // @ts-ignore
+        this.items = json.archives;
+        // @ts-ignore otherwise it yells
         this.index = Fuse.parseIndex<Archive>(json.index);
         const options = { keys };
-        // @ts-ignore
         this.fuse = new Fuse<Archive>(this.items, options, this.index);
       },
       sort(column: string) {
@@ -169,23 +167,29 @@ const subcategories = categories.map(category => (
       filterBy(column: string, value: string) {
         this.filterColumn = column;
         this.filterValue = value;
-        this.currentPage = 1;
+        this.current = 1;
       },
       get results() {
         let items = this.items;
         if (this.query !== "") {
-          // @ts-ignore
+          // @ts-ignore items is never[] which is weird??
           items = this.fuse.search(this.query).map(result => result.item);
         }
         if (this.filterColumn !== "" && this.filterValue !== "") {
           if (this.filterColumn == "subcategory" && this.filterCategory !== "") {
-            items = items.filter(item => item["category"] == this.filterCategory && item[this.filterColumn] == this.filterValue);
+            items = items.filter(item => 
+              item["category"] == this.filterCategory && item[this.filterColumn] == this.filterValue
+            );
+          } else if (this.filterColumn == "tool" || this.filterColumn == "level") {
+            items = items.filter(item => 
+              Object.values(item[this.filterColumn]).some(value => value == this.filterValue)
+            );
           } else {
             items = items.filter(item => item[this.filterColumn] == this.filterValue);
           }
         }
-        const start = (this.currentPage - 1) * this.itemsPerPage;
-        const end = this.currentPage * this.itemsPerPage;
+        const start = (this.current - 1) * this.itemsPerPage;
+        const end = this.current * this.itemsPerPage;
         this.hits = items.length;
         return items.slice(start, end);
       },
@@ -193,11 +197,10 @@ const subcategories = categories.map(category => (
         return Math.ceil(this.hits / this.itemsPerPage);
       },
       previous() {
-        if (this.currentPage > 1) { this.currentPage--; }
+        if (this.current > 1) { this.current--; }
       },
       next() {
-        if (this.currentPage < this.total) { this.currentPage++; }
+        if (this.current < this.total) { this.current++; }
       },
     }));
-  });
 </script>
