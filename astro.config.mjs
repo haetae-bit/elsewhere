@@ -1,7 +1,10 @@
 import { defineConfig } from 'astro/config';
-import htmx from "astro-htmx";
+import alpinejs from "@astrojs/alpinejs";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [htmx()],
+  integrations: [alpinejs()],
+  redirects: {
+    "/archive/all": "/archive/all/1",
+  },
 });

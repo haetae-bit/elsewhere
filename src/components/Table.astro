@@ -1,0 +1,131 @@
+---
+import skillLevels from "@/metadata/skill-levels";
+import tools from "@/metadata/tools";
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
+
+const filteredArchive = await getCollection("archive", ({ data }) => data.subcategory);
+const subcategories = categories.map(category => (
+  [...new Set(filteredArchive.filter(({ data }) => data.category == category).map(({ data }) => data.subcategory))]
+));
+---
+<div x-data="table">
+  <input type="search" name="search" id="search" x-model.debounce.500ms="query" />
+  <button type="submit" x-show="false">Search</button>
+
+  <div class="filters" role="menu">
+    <div class="filter">
+      <label for="category-filter">Categories</label>
+      <select name="category-filter" id="category-filter" @change="filterBy('category', $el.value)">
+        <option disabled>Filter by category...</option>
+        {categories.map(category => (
+          <option value={category}>{category}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="subcategory-filter">Subcategories</label>
+      <select name="subcategory-filter" id="subcategory-filter" @change="filterBy('subcategory', $el.value)">
+        <option disabled>Filter by subcategory...</option>
+        {subcategories.map((category, index) => (
+          <optgroup label={categories[index]}>
+            {category.map(subcategory => (
+              <option value={subcategory}>{subcategory}</option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="tool-filter">Tools</label>
+      <select name="tool-filter" id="tool-filter" @change="filterBy('tool', $el.value)">
+        <option disabled>Filter by tools...</option>
+        {tools.map(tool => (
+          <option value={tool}>{tool}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="level-filter">Skill Levels</label>
+      <select name="level-filter" id="level-filter" @change="filterBy('level', $el.value)">
+        <option disabled>Filter by skill levels...</option>
+        {skillLevels.map(level => (
+          <option value={level}>{level}</option>
+        ))}
+      </select>
+    </div>
+
+    <button @click="filterBy('','')">Clear Filters</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Category</th>
+        <th scope="col">Subcategory</th>
+        <th scope="col">Tools</th>
+        <th scope="col">Formats</th>
+        <th scope="col">Skill Levels</th>
+        <th scope="col">Archived?</th>
+        <th scope="col">Compatibility</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <template x-for="item in results" :key="item.id">
+        <tr>
+          <td>
+            <a :href="item.url" x-text="item.title" target="_blank" rel="noopener noreferrer"></a>
+          </td>
+          <td x-text="item.author"></td>
+          <td x-text="item.category"></td>
+          <td x-text="item.subcategory"></td>
+          <td>
+            <template x-for="tool in item.tool">
+              <span x-text="tool"></span>
+            </template>
+          </td>
+          <td>
+            <template x-for="format in item.format">
+              <span x-text="format"></span>
+            </template>
+          </td>
+          <td>
+            <template x-for="level in item.level">
+              <span x-text="level"></span>
+            </template>
+          </td>
+          <td>
+            <template x-if="item.archived">
+              <a :href="item.archived" target="_blank" rel="noopener noreferrer">Archive Link</a>
+            </template>
+            <template x-if="item.archived == false">
+              <span>Not archived (yet)</span>
+            </template>
+          </td>
+          <td x-text="item.compat"></td>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+
+  <div>
+    <button @click="previous" :disabled="current == 1">Previous</button>
+    <span x-text="`Page ${current} of ${total}`"></span>
+    <button @click="next" :disabled="current == total">Next</button>
+  </div>
+
+  <noscript>
+    <p>It seems like you don't have JavaScript enabled. You can still page through <a href="/archive/all/1">all of the archives</a>.</p>
+  </noscript>
+</div>
+
+<script>
+  import table from "./table";
+  window.Alpine.data("table", table);
+</script>

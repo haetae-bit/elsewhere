@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import Paginated from "@/layouts/Paginated.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const archives = await getCollection("archive");
+  return paginate(archives, { pageSize: 20 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+<Paginated page={page} />

@@ -4,69 +4,16 @@ import slugify from "@/utils/slugify";
 import categories from "@/metadata/categories";
 import Layout from "@/layouts/Layout.astro";
 import ArchiveItem from "~/ArchiveItem.astro";
+import Table from "~/Table.astro";
 
 const archives = await getCollection("archive");
 ---
 <Layout title="Archive" class="archive">
   <h1 class="title">Archives</h1>
 
-  <section 
-    id="tabs" 
-    hx-get={`/archive/category/${slugify(categories[0])}`} 
-    hx-trigger="load delay:100ms" 
-    hx-target="#tabs" 
-    hx-swap="innerHTML"
-    hx-indicator="#category-loading"
-  >
-    <p id="category-loading">Loading...</p>
+  <section id="archive">
+    <Table />
   </section>
-
-  <noscript>
-    <nav id="topics" aria-label="Navigate categories">
-      <ul>
-        {categories.map(category => (
-          <li><a href={`#${slugify(category)}`}>{category}</a></li>
-        ))}
-      </ul>
-    </nav>
-
-    <section id="archive">
-    {categories.map(category => {
-      const subcategories = [...new Set(archives.filter(({ data }) => data.category === category).map(({ data }) => data.subcategory))];
-      return (
-        <section class="category">
-          <h2 id={slugify(category)} class="title">{category}</h2>
-          <nav id={`${slugify(category)}-nav`} class="subtopics" aria-label={`Subcategories for: ${category}`}>
-            <ul>
-              {subcategories.map(subcategory => (
-                <li><a href={`#${slugify(category)}-${slugify(subcategory)}`}>{subcategory}</a></li>
-              ))}
-            </ul>
-            <a href="#" class="to-top">top</a>
-          </nav>
-          {subcategories.map(subcategory => (
-            <section class="subcategory">
-              <h3 id={`${slugify(category)}-${slugify(subcategory)}`} class="title">{subcategory}</h3>
-              {archives.filter(({ data }) => data.category === category && data.subcategory == subcategory).map(item => (
-                <ArchiveItem
-                  title={item.data.title}
-                  url={item.data.url}
-                  author={item.data.author}
-                  stats={item.data.stats}
-                  level={item.data.level}
-                  compat={item.data.compat}
-                >
-                  <Fragment set:html={item.rendered?.html} />
-                </ArchiveItem>
-              ))}
-            </section>
-          ))}
-        </section>
-      );
-    })}
-    </section>
-    <style>#category-loading { display: none; }</style>
-  </noscript>
 </Layout>
 
 <style>
@@ -74,118 +21,7 @@ const archives = await getCollection("archive");
     flex-flow: column wrap;
   }
 
-  /* FOR JS-ENABLED USERS */
-  #tabs {
-    display: flex;
-    flex-flow: column wrap;
-    gap: var(--space-s);
-
-    h2 { font-size: var(--step-3); }
-    h3 { font-size: var(--step-2); }
-    
-    #inner-tabs {
-      display: flex;
-      flex-flow: column wrap;
-      gap: var(--space-s);
-      container-type: inline-size;
-
-      .tab-content {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(35ch, 75ch));
-        gap: var(--space-xs);
-        margin: 0 min(0px, (80ch - 100vw + var(--space-m)) / 2);
-
-        .title { grid-column: 1 / -1; }
-
-        @media screen and (max-width: 1370px) {
-          grid-template-columns: repeat(2, minmax(35ch, 50ch));
-        }
-
-        @container (width < 860px) {
-          grid-template-columns: 1fr;
-        }
-      }
-    } 
-    
-    .tab-list {
-      display: flex;
-      flex-flow: row wrap;
-      background-color: color-mix(in oklab, var(--background) 90%, var(--text) 10%);
-      padding: 1rem;
-      justify-content: center;
-      gap: var(--space-2xs);
-      
-      button[role="tab"] {
-        padding: 0.125rem 0.5rem;
-      }
-    }
-
-    h2 { font-variant: small-caps; }
-    .title { text-align: center; }
-  }
-
-  /* FOR JS-DISABLED USERS */
-  #topics, .subtopics {
-    position: relative;
-    display: grid;
-    background-color: color-mix(in oklab, var(--background) 90%, var(--text) 10%);
-    padding: 1rem;
-    place-content: center;
-
-    ul {
-      list-style: none;
-      display: flex;
-      flex-flow: row wrap;
-      gap: 1rem;
-    }
-
-    .to-top {
-      position: absolute;
-      top: 0;
-      right: 0;
-      font-size: var(--step--1);
-    }
-  }
-
-  #topics { margin: var(--space-3xs) 0 var(--space-s); }
-
-  #archive {
-    display: flex;
-    flex-flow: column wrap;
-    gap: var(--space-xl);
-  }
-
-  .category {
-    display: flex;
-    flex-flow: column wrap;
-    gap: var(--space-s);
-    container-type: inline-size;
-  }
-
-  .subcategory {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(35ch, 75ch));
-    gap: var(--space-xs);
-    margin: 0 min(0px, (80ch - 100vw + var(--space-m)) / 2);
-
-    @media screen and (max-width: 1370px) {
-      grid-template-columns: repeat(2, minmax(35ch, 50ch));
-    }
-
-    @container (width < 860px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
   h1, h2 { font-variant: small-caps; }
   h2 { font-size: var(--step-3); }
   h3 { font-size: var(--step-2); }
-  .title {
-    text-align: center;
-    grid-column: 1 / -1;
-  }
 </style>
-
-<script>
-  import "htmx.org";
-</script>
