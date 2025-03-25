@@ -1,0 +1,53 @@
+---
+import type { Page } from "astro"
+import Layout from "./Layout.astro"
+import ArchiveItem from "~/ArchiveItem.astro";
+
+interface Props {
+  page: Page;
+}
+
+const { page } = Astro.props;
+---
+<Layout>
+  <slot name="title">
+    <h1>Archives</h1>
+  </slot>
+  <h2>Page {page.currentPage}</h2>
+
+  <section>
+    <slot />
+    <ol>
+      <li>
+        {page.data.map(({ id, data, rendered }) => (
+          <ArchiveItem
+            id={id}
+            title={data.title}
+            url={data.url}
+            author={data.author}
+            stats={data.stats}
+            level={data.level}
+            compat={data.compat}
+          >
+            <Fragment set:html={rendered?.html} />
+          </ArchiveItem>
+        ))}
+      </li>
+    </ol>
+  </section>
+
+  {Math.ceil(page.total / page.size) !== page.currentPage && (
+    <nav>
+      {page.url.first && <a href={page.url.first}>First</a>}
+      {page.url.prev && <a href={page.url.prev}>Previous</a>}
+
+      <span>
+        {page.currentPage} of 
+        {Math.ceil(page.total / page.size)}
+      </span>
+
+      {page.url.next && <a href={page.url.next}>Next</a>}
+      {page.url.last && <a href={page.url.last}>Last</a>}
+    </nav>
+  )}
+</Layout>

@@ -1,48 +1,13 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
-import Layout from "@/layouts/Layout.astro";
-import ArchiveItem from "~/ArchiveItem.astro";
+import Paginated from "@/layouts/Paginated.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const archives = await getCollection("archive");
-  
   return paginate(archives, { pageSize: 20 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 ---
-<Layout>
-  <h1>Archives</h1>
-  <h2>Page {page.currentPage}</h2>
-
-  <section>
-    <ol>
-      <li>
-        {page.data.map(({ id, data, rendered }) => (
-          <ArchiveItem
-            id={id}
-            title={data.title}
-            url={data.url}
-            author={data.author}
-            stats={data.stats}
-            level={data.level}
-            compat={data.compat}
-          >
-            <Fragment set:html={rendered?.html} />
-          </ArchiveItem>
-        ))}
-      </li>
-    </ol>
-  </section>
-
-  <nav>
-    {page.url.first ? <a href={page.url.first}>First</a> : null}
-    {page.url.prev ? <a href={page.url.prev}>Previous</a> : null}
-
-    {page.total / page.size}
-
-    {page.url.next ? <a href={page.url.next}>Next</a> : null}
-    {page.url.last ? <a href={page.url.last}>Last</a> : null}
-  </nav>
-</Layout>
+<Paginated page={page} />

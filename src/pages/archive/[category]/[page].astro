@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
+import slugify from "@/utils/slugify";
+import Paginated from "@/layouts/Paginated.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const archives = await getCollection("archive");
+  return categories.flatMap(category => {
+    const filteredCategories = archives.filter(({ data }) => data.category === category);
+    return paginate(filteredCategories, {
+      params: { category: slugify(category) },
+      pageSize: 20,
+    });
+  });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+<Paginated page={page}>
+  <h1 slot="title">Category: {page.data.flatMap(({ data }) => data.category)[0]}</h1>
+</Paginated>
