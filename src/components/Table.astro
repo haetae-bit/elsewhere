@@ -1,12 +1,13 @@
 ---
+import { getCollection } from "astro:content";
 import skillLevels from "@/metadata/skill-levels";
 import tools from "@/metadata/tools";
-import { getCollection } from "astro:content";
 import categories from "@/metadata/categories";
+import TableFilter from "./TableFilter.astro";
 
 const filteredArchive = await getCollection("archive", ({ data }) => data.subcategory);
 const subcategories = categories.map(category => (
-  [...new Set(filteredArchive.filter(({ data }) => data.category == category).map(({ data }) => data.subcategory))]
+  { [category]: [...new Set(filteredArchive.filter(({ data }) => data.category == category).map(({ data }) => data.subcategory))] }
 ));
 ---
 <div x-data="table">
@@ -14,49 +15,11 @@ const subcategories = categories.map(category => (
   <button type="submit" x-show="false">Search</button>
 
   <div class="filters" role="menu">
-    <div class="filter">
-      <label for="category-filter">Categories</label>
-      <select name="category-filter" id="category-filter" @change="filterBy('category', $el.value)">
-        <option disabled>Filter by category...</option>
-        {categories.map(category => (
-          <option value={category}>{category}</option>
-        ))}
-      </select>
-    </div>
 
-    <div class="filter">
-      <label for="subcategory-filter">Subcategories</label>
-      <select name="subcategory-filter" id="subcategory-filter" @change="filterBy('subcategory', $el.value)">
-        <option disabled>Filter by subcategory...</option>
-        {subcategories.map((category, index) => (
-          <optgroup label={categories[index]}>
-            {category.map(subcategory => (
-              <option value={subcategory}>{subcategory}</option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
-    </div>
-
-    <div class="filter">
-      <label for="tool-filter">Tools</label>
-      <select name="tool-filter" id="tool-filter" @change="filterBy('tool', $el.value)">
-        <option disabled>Filter by tools...</option>
-        {tools.map(tool => (
-          <option value={tool}>{tool}</option>
-        ))}
-      </select>
-    </div>
-
-    <div class="filter">
-      <label for="level-filter">Skill Levels</label>
-      <select name="level-filter" id="level-filter" @change="filterBy('level', $el.value)">
-        <option disabled>Filter by skill levels...</option>
-        {skillLevels.map(level => (
-          <option value={level}>{level}</option>
-        ))}
-      </select>
-    </div>
+    <TableFilter title="Categories" name="category" data={categories} />
+    <TableFilter title="Subcategories" name="subcategory" data={subcategories} />
+    <TableFilter title="Tools" name="tool" data={tools} />
+    <TableFilter title="Skill Levels" name="level" data={skillLevels} />
 
     <button @click="filterBy('','')">Clear Filters</button>
   </div>

@@ -16,11 +16,11 @@ export default () => ({
   async init() {
     const response = await fetch("/archive/data.json");
     const json = await response.json();
-    this.items = json.archives;
-    // @ts-ignore :/
+    this.items = json.archives as Archive[];
+    // @ts-expect-error because it's yelling
     this.index = Fuse.parseIndex<Archive>(json.index);
     const options = { keys };
-    this.fuse = new Fuse<Archive>(this.items as Archive[], options, this.index);
+    this.fuse = new Fuse<Archive>(this.items, options, this.index);
   },
   sort(column: string) {
     if (this.sortColumn == column) { this.sortAsc = !this.sortAsc; }

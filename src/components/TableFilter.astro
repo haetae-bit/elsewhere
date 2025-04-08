@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+  name: string;
+  data: ReadonlyArray<unknown>;
+}
+
+const { title, name, data } = Astro.props;
+---
+
+<div class="filter">
+  <label for={`${name}-filter`}>{title}</label>
+  <select name={`${name}-filter`} id={`${name}-filter`} @change={`filterBy('${name}', $el.value)`}>
+    <option disabled>Filter by {name}...</option>
+    {data.some(value => typeof value == "object")
+      ? data.map((item: any) => {
+        // this is all literally just to accomodate subcategories. fragile as hell
+        return Object.entries(item).map((subItem: { [any: string]: any }) => (
+          <optgroup label={subItem[0]}>
+            {subItem[1].map((subItemValue: unknown) => (
+              <option value={subItemValue as string}>{subItemValue}</option>
+            ))}
+          </optgroup>
+        ))})
+      : data.map(item => (
+        <option value={item as string}>{item}</option>
+      ))
+    }
+  </select>
+</div>
