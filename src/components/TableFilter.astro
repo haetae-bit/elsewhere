@@ -17,8 +17,8 @@ const { title, name, data } = Astro.props;
         // this is all literally just to accomodate subcategories. fragile as hell
         return Object.entries(item).map((subItem: { [any: string]: any }) => (
           <optgroup label={subItem[0]}>
-            {subItem[1].map((subItemValue: unknown) => (
-              <option value={subItemValue as string}>{subItemValue}</option>
+            {subItem[1].map((subItemValue: any) => (
+              <option value={subItemValue}>{subItemValue}</option>
             ))}
           </optgroup>
         ))})
