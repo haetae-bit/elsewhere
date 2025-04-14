@@ -1,0 +1,64 @@
+---
+import type { Page } from 'astro';
+import slugify from '@/utils/slugify';
+import categories from '@/metadata/categories';
+
+interface Props {
+  slot: string;
+  label: string;
+  page: Page;
+  data: unknown[] | ReadonlyArray<unknown>;
+}
+
+const { slot, label, page, data } = Astro.props;
+---
+<nav aria-label={label} slot={slot}>
+  <h3>{label}</h3>
+  <ul>
+    {categories.some(category => page.url.current.includes(slugify(category))) && slot === "sub-navigation"
+      ? data.map(item => (
+        <li>
+          <a href={page.url.current.replace(page.currentPage.toString(), slugify(item as string))}>{item}</a>
+        </li>
+      ))
+      : data.map(item => (
+        <li>
+          <a href={`/${page.url.current.split("/")[1]}/${slugify(item as string)}/1`}>{item}</a>
+        </li>
+      ))
+    }
+  </ul>
+  <!-- this needs to collapse -->
+</nav>
+
+<style>
+  nav { margin-bottom: var(--space-xs); }
+
+  h3 {
+    font-size: var(--step-0);
+    font-weight: normal;
+    color: var(--alt);
+    margin-bottom: var(--space-xs);
+  }
+
+  ul {
+    display: flex;
+    flex-flow: row wrap;
+    list-style: none;
+    gap: var(--space-2xs);
+
+    li > a {
+      background-color: var(--primary);
+      color: var(--background);
+      text-decoration: none;
+      padding: var(--space-3xs) var(--space-2xs);
+      transition: all 0.5s ease-in-out;
+
+      &:focus { display: initial; }
+      &:hover {
+        background-color: color-mix(in oklab, var(--background) 95%, var(--text));
+        color: var(--text);
+      }
+    }
+  }
+</style>

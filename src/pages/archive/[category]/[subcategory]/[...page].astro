@@ -2,14 +2,16 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import categories from "@/metadata/categories";
+import { getSubcategories } from "@/metadata/subcategories";
 import slugify from "@/utils/slugify";
 import Paginated from "@/layouts/Paginated.astro";
+import SubMenu from "~/SubMenu.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const archives = await getCollection("archive");
   return categories.flatMap(category => {
-    const subcategories = [...new Set(archives.filter(({ data }) => data.category === category).map(({ data }) => data.subcategory))];
-    return subcategories.flatMap(subcategory => {
+    const items = getSubcategories(category);
+    return items.flatMap((subcategory: string) => {
       const filteredSubcategories = archives.filter(({ data }) => data.category === category && data.subcategory === subcategory);
       return paginate(filteredSubcategories, {
         params: { category: slugify(category), subcategory: slugify(subcategory) },
@@ -20,11 +22,14 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const { category } = Astro.params;
+const { category: url } = Astro.params;
+const category = page.data.flatMap(({ data }) => data.category)[0];
+const subcategory = page.data.flatMap(({ data }) => data.subcategory)[0];
 ---
-<Paginated page={page}>
+<Paginated {page}>
+  <SubMenu slot="sub-navigation-root" {page} label="All Category Navigation" data={categories} />
   <hgroup slot="title">
-    <h1>Category: <a href={`/archive/${category}/1`}>{page.data.flatMap(({ data }) => data.category)[0]}</a></h1>
-    <h2>Subcategory: {page.data.flatMap(({ data }) => data.subcategory)[0]}</h2>
+    <h1>Category: <a href={`/archive/${url}/1`}>{category}</a></h1>
+    <h2>Subcategory: {subcategory}</h2>
   </hgroup>
 </Paginated>

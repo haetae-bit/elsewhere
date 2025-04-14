@@ -1,9 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import slugify from "@/utils/slugify";
-import categories from "@/metadata/categories";
 import Layout from "@/layouts/Layout.astro";
-import ArchiveItem from "~/ArchiveItem.astro";
 import Table from "~/Table.astro";
 
 const archives = await getCollection("archive");
@@ -11,7 +8,7 @@ const archives = await getCollection("archive");
 <Layout title="Archive" class="archive">
   <h1 class="title">Archives</h1>
 
-  <section id="archive">
+  <section id="archive-table">
     <Table />
   </section>
 </Layout>

@@ -1,8 +1,8 @@
-import type categories from "@/metadata/categories";
-import type expacs from "@/metadata/expacs";
-import type formats from "@/metadata/formats";
+import categories from "@/metadata/categories";
+import expacs from "@/metadata/expacs";
+import formats from "@/metadata/formats";
 import skillLevels from "@/metadata/skill-levels";
-import type tools from "@/metadata/tools";
+import tools from "@/metadata/tools";
 
 export const keys = [
   "id",

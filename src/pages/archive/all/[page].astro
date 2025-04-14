@@ -1,7 +1,9 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
+import categories from "@/metadata/categories";
 import Paginated from "@/layouts/Paginated.astro";
+import SubMenu from "~/SubMenu.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const archives = await getCollection("archive");
@@ -10,4 +12,6 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 ---
-<Paginated page={page} />
+<Paginated {page}>
+  <SubMenu slot="sub-navigation" {page} label="Category Navigation" data={categories} />
+</Paginated>

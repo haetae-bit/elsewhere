@@ -1,14 +1,9 @@
 ---
-import { getCollection } from "astro:content";
 import skillLevels from "@/metadata/skill-levels";
 import tools from "@/metadata/tools";
 import categories from "@/metadata/categories";
+import { subcategories } from "@/metadata/subcategories";
 import TableFilter from "./TableFilter.astro";
-
-const filteredArchive = await getCollection("archive", ({ data }) => data.subcategory);
-const subcategories = categories.map(category => (
-  { [category]: [...new Set(filteredArchive.filter(({ data }) => data.category == category).map(({ data }) => data.subcategory))] }
-));
 ---
 <div x-data="table">
   <input type="search" name="search" id="search" x-model.debounce.500ms="query" />

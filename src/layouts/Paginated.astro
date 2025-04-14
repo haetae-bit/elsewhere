@@ -9,45 +9,113 @@ interface Props {
 
 const { page } = Astro.props;
 ---
-<Layout>
+<Layout class="paginated">
+  <slot name="sub-navigation-root" />
+
   <slot name="title">
     <h1>Archives</h1>
   </slot>
   <h2>Page {page.currentPage}</h2>
 
+  <slot name="sub-navigation" />
+
   <section>
     <slot />
-    <ol>
-      <li>
+    <slot name="content">
+      <ol>
         {page.data.map(({ id, data, rendered }) => (
-          <ArchiveItem
-            id={id}
-            title={data.title}
-            url={data.url}
-            author={data.author}
-            stats={data.stats}
-            level={data.level}
-            compat={data.compat}
-          >
-            <Fragment set:html={rendered?.html} />
-          </ArchiveItem>
+          <li>
+            <ArchiveItem
+              id={id}
+              title={data.title}
+              url={data.url}
+              author={data.author}
+              stats={data.stats}
+              level={data.level}
+              compat={data.compat}
+            >
+              <Fragment set:html={rendered?.html} />
+            </ArchiveItem>
+          </li>
         ))}
-      </li>
-    </ol>
+      </ol>
+    </slot>
   </section>
 
-  {Math.ceil(page.total / page.size) !== page.currentPage && (
-    <nav>
-      {page.url.first && <a href={page.url.first}>First</a>}
-      {page.url.prev && <a href={page.url.prev}>Previous</a>}
+  <nav aria-label="Page Navigation">
+    <div class="previous">
+      {(page.url.first !== page.url.prev) && <a href={page.url.first} aria-label="Go to first page">First</a>}
+      {page.url.prev &&
+        <a href={page.url.prev} aria-label={`Go to previous page (page ${page.currentPage - 1})`}>Previous</a>
+      }
+    </div>
 
-      <span>
-        {page.currentPage} of 
-        {Math.ceil(page.total / page.size)}
-      </span>
+    <div class="current">
+      {page.currentPage} out of {Math.ceil(page.total / page.size)}
+    </div>
 
-      {page.url.next && <a href={page.url.next}>Next</a>}
-      {page.url.last && <a href={page.url.last}>Last</a>}
-    </nav>
-  )}
+    <div class="next">
+      {page.url.next && 
+        <a href={page.url.next} aria-label={`Go to next page (page ${page.currentPage + 1})`}>Next</a>
+      }
+      {(page.url.last !== page.url.next) && <a href={page.url.last} aria-label="Go to last page">Last</a>}
+    </div>
+  </nav>
 </Layout>
+
+<style>
+  .paginated {
+    flex-flow: column wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    max-width: min(100vw, calc(100vw - var(--space-xs)));
+  }
+
+  h2 {
+    font-size: var(--step-2);
+    font-weight: normal;
+    color: var(--alt);
+  }
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    .previous {
+      grid-column: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: subgrid;
+      justify-items: start;
+
+      & :first-child { grid-column: 1; }
+      & :last-child { grid-column: 2; }
+      & :only-child { grid-column: 2; }
+    }
+
+    .current {
+      grid-column: 2;
+      justify-self: center;
+    }
+    
+    .next {
+      grid-column: 3;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: subgrid;
+      justify-items: end;
+
+      & :first-child { grid-column: 1; }
+      & :last-child { grid-column: 2; }
+      & :only-child { grid-column: 1; }
+    }
+  }
+</style>

@@ -20,8 +20,8 @@ const { id, title, url, author, stats, level, compat }: Props = Astro.props;
 <article class="card" id={slugify(id)}>
   <header class="card-header">
     <hgroup>
-      <h4><a href={url} target="_blank" rel="noopener noreferrer">{title}</a></h4>
-      <h5>by <strong>{author}</strong></h5>
+      <h1><a href={url} target="_blank" rel="noopener noreferrer">{title}</a></h1>
+      <h2>by <strong>{author}</strong></h2>
     </hgroup>
     <div class="card-tags">
       {stats.tool.map(tool => <span class="tag tool">{tool}</span>)}
@@ -34,6 +34,8 @@ const { id, title, url, author, stats, level, compat }: Props = Astro.props;
     </div>
     {compat && <span class="card-info">{compat}</span>}
   </header>
+
+  <hr />
 
   <div class="card-content">
     <slot />
@@ -48,12 +50,20 @@ const { id, title, url, author, stats, level, compat }: Props = Astro.props;
   .card {
     display: flex;
     flex-flow: column wrap;
-    min-width: max(35ch, 100%);
+    align-items: center;
+    min-width: 35ch;
     max-width: min(50ch, 75ch);
     padding: var(--space-xs);
     gap: var(--space-s);
     background-color: color-mix(in oklab, var(--background) 95%, var(--text) 5%);
     line-height: 1;
+
+    hr {
+      border: none;
+      background-color: var(--decorative);
+      height: 2px;
+      width: 75%;
+    }
   }
 
   .card-header {
@@ -62,6 +72,8 @@ const { id, title, url, author, stats, level, compat }: Props = Astro.props;
     flex-flow: column wrap;
     align-items: center;
     gap: var(--space-2xs);
+    width: 100%;
+    padding: 0 1rem;
     text-align: center;
 
     hgroup {
@@ -70,8 +82,12 @@ const { id, title, url, author, stats, level, compat }: Props = Astro.props;
       gap: var(--space-3xs);
       align-items: center;
 
-      h4 { font-size: var(--step-1); }
-      h5 { font-size: var(--step-0); }
+      h1 { font-size: var(--step-1); }
+      h2 {
+        font-size: var(--step-0);
+        font-weight: normal;
+        color: var(--text);
+      }
     }
 
     .card-info {
